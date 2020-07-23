@@ -7,7 +7,7 @@ i should have coded checks for these folders i know i know...\
 \
 info on patches:\
 \
-PATCH 1: MAKE BINTEXT CLOSE AFTER FILE IS LOADED\
+PATCH 1: make bintext close after file is loaded\
 31AD jmp to 3860 = jmp 0x6B3 = E9AE060000\
 shellcode exits program with exit code 0\
 FC33D2B23064FF325A8B520C8B52148B\
