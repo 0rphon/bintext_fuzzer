@@ -38,18 +38,18 @@ fn write_file(path: &PathBuf, data: &Vec<u8>) -> Result<(),std::io::Error>{
 
 
 fn test_bintext(path: &PathBuf) -> io::Result<Option<i32>>{
-    let output = Command::new("./target.exe").args(&[path]).status()?;      //run tmp file against bintext and wait to exit
-    Ok(output.code())                                                       //return output code
+    let output = Command::new("./target.exe").args(&[path]).status()?;  //run tmp file against bintext and wait to exit
+    Ok(output.code())                                                   //return output code
 }
 
 
 
-fn save_crash(file: &PathBuf, path: &PathBuf) -> Result<(), std::io::Error>{
-    let mut f = File::open(file)?;                                          //open file that caused crash
-    let mut buffer: Vec<u8> = Vec::new();                                   //create buffer for bytes
-    f.read_to_end(&mut buffer)?;                                            //read file into buffer
-    write_file(path, &buffer)?;                                             //write file to crashes folder
-    Ok(())                                                                  //return ok
+fn save_crash(file: &PathBuf, path: &PathBuf) -> Result<(),std::io::Error>{
+    let mut f = File::open(file)?;          //open file that caused crash
+    let mut buffer: Vec<u8> = Vec::new();   //create buffer for bytes
+    f.read_to_end(&mut buffer)?;            //read file into buffer
+    write_file(path, &buffer)?;             //write file to crashes folder
+    Ok(())                                  //return ok
 }
 
 
@@ -58,32 +58,32 @@ fn worker(thr_id: usize, corpus: Arc<Vec<Vec<u8>>>, test_tx: std::sync::mpsc::Se
     let tmp_name = PathBuf::from(format!("tmp_{}.exe",thr_id));                                                             //create tmp file name
     let mut rng = rand::thread_rng();
     let mut input = Vec::new();
-    loop {                                                                                                                  //do forever
-        let i = rng.gen_range(0, corpus.len());                                                                             //gen index of target program
-        input.clear();                                                                                                      //clear input
-        input.extend_from_slice(&corpus[i]);                                                                                //copy target program into input
-        for _ in 0..8 {                                                                                                     //do 8 times
-            let i = rng.gen_range(0, input.len());                                                                          //generate random index
-            input[i] = rng.gen::<u8>();                                                                                     //at index write random byte
+    loop {                                                                                                  //do forever
+        let i = rng.gen_range(0, corpus.len());                                                             //gen index of target program
+        input.clear();                                                                                      //clear input
+        input.extend_from_slice(&corpus[i]);                                                                //copy target program into input
+        for _ in 0..8 {                                                                                     //do 8 times
+            let i = rng.gen_range(0, input.len());                                                          //generate random index
+            input[i] = rng.gen::<u8>();                                                                     //at index write random byte
         }
-        write_file(&tmp_name, &input)?;                                                                                     //write modified input to tmp file
+        write_file(&tmp_name, &input)?;                                                                     //write modified input to tmp file
 
-        let exit_code = match test_bintext(&PathBuf::from(&tmp_name)) {                                                     //test and match bintext exit code
-            Ok(exit_status) => match exit_status {                                                                          //if returned exit code
-                Some(i) => i,                                                                                               //exit_code = exit code
-                None => panic!("Didn't return exit code"),                                                                  //else panic
+        let exit_code = match test_bintext(&PathBuf::from(&tmp_name)) {                                     //test and match bintext exit code
+            Ok(exit_status) => match exit_status {                                                          //if returned exit code
+                Some(i) => i,                                                                               //exit_code = exit code
+                None => panic!("Didn't return exit code"),                                                  //else panic
             },
-            Err(e) => panic!("Returned error {}", e),                                                                       //if returned error panic
+            Err(e) => panic!("Returned error {}", e),                                                       //if returned error panic
         };
 
-        if exit_code != 0 {                                                                                                 //if exit code not 0
-            println!("Returned {}", exit_code);                                                                             //print exit code and save tmp file to crash folder
-            let crash_name = &PathBuf::from(format!(r"crashes/{}_{}.exe",exit_code,rng.gen::<u32>()));                      //create crash program name
-            save_crash(&tmp_name, &crash_name).unwrap_or_else(|e|panic!("Error saving crash file: {}",e));                  //save input that caused crash to crashes folder
-            crash_tx.send(exit_code).unwrap_or_else(|e| panic!(format!("Could not send crash_log: {}",e)));                 //send exit code to main thread
+        if exit_code != 0 {                                                                                 //if exit code not 0
+            println!("Returned {}", exit_code);                                                             //print exit code and save tmp file to crash folder
+            let crash_name = &PathBuf::from(format!(r"crashes/{}_{}.exe",exit_code,rng.gen::<u32>()));      //create crash program name
+            save_crash(&tmp_name, &crash_name).unwrap_or_else(|e|panic!("Error saving crash file: {}",e));  //save input that caused crash to crashes folder
+            crash_tx.send(exit_code).unwrap_or_else(|e| panic!(format!("Could not send crash_log: {}",e))); //send exit code to main thread
         }
 
-        test_tx.send(1).unwrap_or_else(|e| panic!(format!("Could not send loop count: {}",e)));                             //send test increase to main thread  
+        test_tx.send(1).unwrap_or_else(|e| panic!(format!("Could not send loop count: {}",e)));             //send test increase to main thread  
     }
 }
 
@@ -94,7 +94,7 @@ fn main() {
     for path in get_corpus().unwrap_or_else(|e| panic!("Error getting corpus: {}",e)) {
         let mut f = File::open(path).unwrap_or_else(|e| panic!("Error opening file in corpus: {}",e));  //open target file in corpus
         let mut data: Vec<u8> = Vec::new();                                             //create buffer to hold bytes
-        f.read_to_end(&mut data).unwrap_or_else(|e| panic!("Error reading file in corpus: {}",e));  //read file to buffer
+        f.read_to_end(&mut data).unwrap_or_else(|e| panic!("Error reading file in corpus: {}",e));      //read file to buffer
         corpus.push(data);
     }
     let corpus: Arc<Vec<Vec<u8>>> = Arc::new(corpus.into_iter().collect());
