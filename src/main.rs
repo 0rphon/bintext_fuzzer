@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::sync::{Arc, mpsc};
 use std::path::PathBuf;
 use std::fs::{File, read_dir};
 use std::{io, thread};
@@ -6,7 +6,6 @@ use std::process::Command;
 use std::io::prelude::*;
 use std::time::Instant;
 use rand::Rng;
-use std::sync::mpsc;
 
 fn get_corpus() -> Result<Vec<PathBuf>, String>{
     let mut corpus = vec!();                    //create var to hold corpus
