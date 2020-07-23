@@ -1,5 +1,5 @@
 # bintext_fuzzer
-A fuzzer for a patched version of bintext.exe\
+A live fuzzer for a patched version of bintext.exe\
 target.exe is a patched version of bintext.exe that automatically closes after the file has been loaded\
 its also patched to not display a dialog box for a "non-standard format" warning\
 the fuzzer requires a crashes/ folder to store crashes and corpus/ folder to pull your target exe's from\
@@ -7,7 +7,7 @@ i should have coded checks for these folders i know i know...\
 \
 info on patches:\
 \
-PATCH 1: MAKE BINTEXT CLOSE AFTER FILE IS LOADED\
+PATCH 1: make bintext close after file is loaded\
 31AD jmp to 3860 = jmp 0x6B3 = E9AE060000\
 shellcode exits program with exit code 0\
 FC33D2B23064FF325A8B520C8B52148B\
