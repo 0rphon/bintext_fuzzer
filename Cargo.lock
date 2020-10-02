@@ -4,6 +4,7 @@
 name = "bintext_fuzzer"
 version = "0.1.0"
 dependencies = [
+ "dynerr",
  "rand",
 ]
 
@@ -12,6 +13,12 @@ name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
+
+[[package]]
+name = "dynerr"
+version = "0.1.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "046b25a670baa55f02ce41e891d101e8a830cb1a6106d11e440862572166b5f3"
 
 [[package]]
 name = "getrandom"
