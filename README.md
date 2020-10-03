@@ -3,8 +3,9 @@
 A live fuzzer for a patched version of bintext.exe\
 target.exe is a patched version of bintext.exe that automatically closes after the file has been loaded\
 its also patched to not display a dialog box for a "non-standard format" warning\
-the fuzzer requires a crashes/ folder to store crashes and corpus/ folder to pull your target exe's from\
-i should have coded checks for these folders i know i know...\
+binaries to test against should be put in /corpus\
+after you get some results in /crashes, do --match to see what modifications were done to each binaries in /crashes to cause a crash.\
+--isolate attempts to get exactly which byte modification caused the crash for each binary in /crashes\
 \
 info on patches:\
 \

@@ -2,4 +2,4 @@
 /corpus
 /crashes
 .vscode
-tmp_*
+/tmp
